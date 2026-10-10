@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff6e8">
+<title>Emoji Fortress</title>
+<style>
+  :root {
+    --ink: #25234b; --muted: #77758f; --pink: #ff5d9e; --purple: #7958ff;
+    --blue: #4cbbff; --yellow: #ffd85b; --mint: #4fe0bd; --paper: #fffaf1;
+    --line: rgba(49, 43, 91, .12);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; font-family: ui-rounded, "SF Pro Rounded", "Trebuchet MS", system-ui, sans-serif; color: var(--ink); }
+  body { background: radial-gradient(circle at 10% 0%, #ffe0ec 0, transparent 30%), radial-gradient(circle at 100% 15%, #dff6ff 0, transparent 28%), #fff6e8; }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  .app { max-width: 1180px; margin: 0 auto; padding: 18px clamp(12px, 3vw, 28px) 28px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .logo { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 17px; background: linear-gradient(145deg, #ff6fae, #8968ff); box-shadow: 0 7px 0 #d8c4ff; font-size: 28px; }
+  h1 { font-size: clamp(21px, 4vw, 31px); margin: 0; letter-spacing: -.8px; line-height: 1; }
+  .tagline { color: var(--muted); font-size: 12px; margin-top: 5px; font-weight: 650; }
+  .top-pill { border: 1px solid var(--line); background: #ffffffbd; border-radius: 999px; padding: 9px 13px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 16px; align-items: start; }
+  .game-card, .side-card { background: #ffffffdc; border: 1px solid #fff; box-shadow: 0 12px 35px rgba(75, 58, 112, .10); border-radius: 25px; overflow: hidden; }
+  .hud { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; padding: 14px 15px 10px; }
+  .stat { border-radius: 15px; padding: 9px 11px; background: #f8f5ff; min-width: 0; }
+  .stat:nth-child(2) { background: #fff1f7; } .stat:nth-child(3) { background: #eefaff; } .stat:nth-child(4) { background: #fff8de; }
+  .stat-label { color: var(--muted); text-transform: uppercase; font-size: 9px; letter-spacing: .9px; font-weight: 900; }
+  .stat-value { font-size: clamp(16px, 2.5vw, 22px); font-weight: 950; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stage-wrap { padding: 0 12px 12px; }
+  #stage { display: block; width: 100%; height: clamp(330px, 55vw, 560px); max-height: 62vh; min-height: 330px; border-radius: 19px; background: #fffdf8; touch-action: none; cursor: crosshair; }
+  .stage-foot { display: flex; justify-content: space-between; gap: 8px; padding: 0 16px 15px; color: var(--muted); font-size: 11px; font-weight: 700; }
+  .side { display: grid; gap: 14px; }
+  .side-card { padding: 17px; }
+  h2 { margin: 0 0 11px; font-size: 16px; letter-spacing: -.3px; }
+  .helper { font-size: 12px; line-height: 1.55; color: var(--muted); margin: 0; }
+  .emoji-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin: 12px 0; }
+  .emoji-btn { border: 2px solid transparent; background: #f8f5ff; border-radius: 13px; min-height: 46px; font-size: 25px; transition: transform .12s, border-color .12s; }
+  .emoji-btn:hover { transform: translateY(-2px); }
+  .emoji-btn.active { border-color: var(--purple); background: #eee8ff; box-shadow: 0 3px 0 #d5caff; }
+  .custom-row { display: flex; gap: 7px; }
+  #customEmoji { min-width: 0; width: 65px; border: 1px solid var(--line); background: white; border-radius: 12px; padding: 9px; text-align: center; font-size: 22px; }
+  .btn { border: 0; border-radius: 14px; padding: 12px 15px; font-weight: 900; color: white; background: linear-gradient(135deg, #ff639f, #9065ff); box-shadow: 0 4px 0 #d5c5ff; transition: transform .1s, filter .1s; }
+  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d5c5ff; }
+  .btn.secondary { color: var(--ink); background: #f0edff; box-shadow: 0 4px 0 #d9d2ff; }
+  .btn.mint { background: linear-gradient(135deg, #36cfb1, #41b9f5); box-shadow: 0 4px 0 #b8eee6; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .btn-row .btn { padding: 11px 8px; font-size: 12px; }
+  #startBtn { width: 100%; margin-top: 10px; }
+  .status { display: flex; gap: 9px; align-items: flex-start; border-radius: 14px; padding: 11px; background: #f4f1ff; margin-top: 12px; }
+  .status-icon { font-size: 19px; line-height: 1.1; }
+  .status strong { display: block; font-size: 12px; margin-bottom: 3px; }
+  .status span { display: block; font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .rules { display: grid; gap: 9px; margin-top: 11px; }
+  .rule { display: flex; gap: 8px; font-size: 11px; line-height: 1.4; color: var(--muted); }
+  .rule b { color: var(--ink); }
+  .swatches { display: flex; gap: 9px; margin-top: 10px; }
+  .swatch { width: 27px; height: 27px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 1px var(--line); }
+  .swatch.active { box-shadow: 0 0 0 3px var(--ink); }
+  .mini { font-size: 10px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+  .toast { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--ink); color: white; border-radius: 999px; padding: 12px 18px; font-weight: 800; font-size: 13px; box-shadow: 0 8px 25px #25234b35; transition: .22s; z-index: 5; text-align: center; width: max-content; max-width: calc(100vw - 28px); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  footer { color: var(--muted); text-align: center; font-size: 10px; padding: 16px 0 0; }
+  @media (max-width: 800px) {
+    .app { padding: 12px 10px 20px; }
+    .layout { grid-template-columns: 1fr; }
+    .side { grid-template-columns: 1fr 1fr; align-items: start; }
+    .side-card:first-child { grid-row: span 2; }
+    #stage { height: clamp(330px, 90vw, 520px); max-height: none; }
+    .top-pill { font-size: 10px; padding: 8px 10px; }
+  }
+  @media (max-width: 520px) {
+    .logo { width: 42px; height: 42px; border-radius: 14px; }
+    .tagline { font-size: 10px; }
+    .side { grid-template-columns: 1fr; }
+    .side-card:first-child { grid-row: auto; }
+    .hud { gap: 5px; padding: 10px 10px 8px; }
+    .stat { padding: 8px; border-radius: 12px; }
+    .stat-label { font-size: 8px; letter-spacing: .4px; }
+    .stage-wrap { padding: 0 8px 8px; }
+    .stage-foot { font-size: 10px; padding: 0 12px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">🛡️</div>
+      <div><h1>Emoji Fortress</h1><div class="tagline">DRAW FAST. DRAW PERFECT. PROTECT YOUR EMOJI.</div></div>
+    </div>
+    <div class="top-pill">✨ COLORFUL CHAOS</div>
+  </header>
+
+  <main class="layout">
+    <section class="game-card">
+      <div class="hud">
+        <div class="stat"><div class="stat-label">Level</div><div class="stat-value" id="levelValue">1</div></div>
+        <div class="stat"><div class="stat-label">Draw time</div><div class="stat-value" id="timerValue">6.0s</div></div>
+        <div class="stat"><div class="stat-label">Lives</div><div class="stat-value" id="livesValue">❤️❤️❤️</div></div>
+        <div class="stat"><div class="stat-label">Score</div><div class="stat-value" id="scoreValue">0</div></div>
+      </div>
+      <div class="stage-wrap"><canvas id="stage" aria-label="Draw a closed protective shape around the emoji"></canvas></div>
+      <div class="stage-foot"><span id="phaseLabel">READY TO DRAW</span><span id="projectileLabel">0 projectiles</span></div>
+    </section>
+
+    <aside class="side">
+      <section class="side-card">
+        <h2>😊 Choose your hero</h2>
+        <p class="helper">Pick an emoji to protect. Custom emojis work too!</p>
+        <div class="emoji-grid" id="emojiGrid">
+          <button class="emoji-btn active" data-emoji="😀" aria-label="Grinning face">😀</button>
+          <button class="emoji-btn" data-emoji="😎" aria-label="Cool face">😎</button>
+          <button class="emoji-btn" data-emoji="🥺" aria-label="Pleading face">🥺</button>
+          <button class="emoji-btn" data-emoji="🤖" aria-label="Robot">🤖</button>
+          <button class="emoji-btn" data-emoji="👻" aria-label="Ghost">👻</button>
+          <button class="emoji-btn" data-emoji="🐱" aria-label="Cat">🐱</button>
+          <button class="emoji-btn" data-emoji="🍕" aria-label="Pizza">🍕</button>
+          <button class="emoji-btn" data-emoji="💎" aria-label="Gem">💎</button>
+          <button class="emoji-btn" data-emoji="🐸" aria-label="Frog">🐸</button>
+          <button class="emoji-btn" data-emoji="❤️" aria-label="Heart">❤️</button>
+          <button class="emoji-btn" data-emoji="🦄" aria-label="Unicorn">🦄</button>
+          <button class="emoji-btn" data-emoji="🐼" aria-label="Panda">🐼</button>
+        </div>
+        <div class="custom-row">
+          <input id="customEmoji" aria-label="Custom emoji" maxlength="8" value="😀">
+          <button id="useCustom" class="btn secondary" style="flex:1">Use custom</button>
+        </div>
+        <button id="startBtn" class="btn">Start level 1 🚀</button>
+        <div class="btn-row">
+          <button id="retryBtn" class="btn secondary">↻ Retry</button>
+          <button id="nextBtn" class="btn mint" disabled>Next level →</button>
+        </div>
+        <div class="status" aria-live="polite">
+          <div class="status-icon" id="statusIcon">✏️</div>
+          <div><strong id="statusTitle">Draw your fortress!</strong><span id="statusText">Draw one continuous, closed loop around your emoji before the timer runs out.</span></div>
+        </div>
+      </section>
+
+      <section class="side-card">
+        <h2>🎨 Shield color</h2>
+        <p class="helper">Choose your favorite glow.</p>
+        <div class="swatches" id="swatches">
+          <button class="swatch active" data-color="#7958ff" style="background:#7958ff" aria-label="Purple shield"></button>
+          <button class="swatch" data-color="#ff5d9e" style="background:#ff5d9e" aria-label="Pink shield"></button>
+          <button class="swatch" data-color="#12cfa6" style="background:#12cfa6" aria-label="Mint shield"></button>
+          <button class="swatch" data-color="#28a8ff" style="background:#28a8ff" aria-label="Blue shield"></button>
+          <button class="swatch" data-color="#ffad33" style="background:#ffad33" aria-label="Orange shield"></button>
+        </div>
+        <div class="rules">
+          <div class="rule"><span>🖊️</span><span><b>Draw:</b> press and drag to create one loop. Close it near your starting point.</span></div>
+          <div class="rule"><span>🧱</span><span><b>Defend:</b> the wall blocks and bounces incoming projectiles.</span></div>
+          <div class="rule"><span>🏆</span><span><b>Win:</b> survive every projectile to unlock the next level.</span></div>
+        </div>
+        <p class="mini">Tip: make your loop big enough to surround the emoji, but leave room for incoming shots to bounce.</p>
+      </section>
+    </aside>
+  </main>
+  <footer>Emoji Fortress prototype · Progress and score are saved in this browser.</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="/src/game.js"></script>
+</body>
+</html>

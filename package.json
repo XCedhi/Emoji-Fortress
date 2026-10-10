@@ -1,0 +1,50 @@
+{
+  "name": "emojistronghold",
+  "version": "0.1.0",
+  "private": true,
+  "rocketCritical": {
+    "dependencies": [
+      "next",
+      "react",
+      "react-dom",
+      "@dhiwise/component-tagger",
+      "@tailwindcss/typography",
+      "recharts"
+    ],
+    "devDependencies": [
+      "typescript",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "eslint-config-next",
+      "tailwindcss",
+      "autoprefixer",
+      "postcss",
+      "eslint",
+      "prettier",
+      "@netlify/plugin-nextjs"
+    ],
+    "scripts": [
+      "dev",
+      "build",
+      "start",
+      "lint",
+      "lint:fix",
+      "format",
+      "serve",
+      "type-check"
+    ],
+    "warning": "🚨 CRITICAL: DO NOT REMOVE OR MODIFY ABOVE DEPENDENCIES - Required for Next.js 15 TypeScript app functionality"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
